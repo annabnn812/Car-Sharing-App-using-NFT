@@ -1,0 +1,46 @@
+.login-signup-container{
+    display: grid;
+    grid-template-columns: 70% 30% 70%;
+    width: 90%;
+    height: 350px;
+    background-color: #3b3a3a;
+    padding: 0px;
+    margin-top: 100px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid #000;
+    overflow: hidden;
+    transition: 0.3s linear;
+}
+
+.login-signup-container.active{
+    grid-template-columns: 0% 30% 70%;
+    transition: 0.3s linear;
+
+}
+.login-signup-container .side-div {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:  url("./wp6571124.jpg") repeat 0 0;
+    background-size: cover ;
+    background-position: center;
+    justify-content: center;
+}
+.login-signup-container .side-div button {
+    padding: 10px 20px;
+    background-color: #000;
+    color: aliceblue;
+    border: 1px solid #000;
+    cursor: pointer;
+    font-size: 0.99rem;
+    transition: 0.2s linear;
+
+}
+.login-signup-container .side-div button:hover {
+    background-color: rgb(55, 54, 54);
+    border: 1px solid rgb(55, 54, 54);
+
+}
