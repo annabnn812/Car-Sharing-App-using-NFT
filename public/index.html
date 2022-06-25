@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#ffff" />
+    <title>My Car Sharing Service </title>
+  <meta name="title" content="Car Sharing Service" />
+  <meta name="description" content="Feel free - Use car Sharing!" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+   
+      
+    <link 
+    rel="stylesheet" 
+    href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/fontawesome.min.css" 
+    integrity="sha384-zIaWifL2YFF1qaDiAo0JFgsmasocJ/rqu7LKYH8CoBEXqGbb9eO+Xi3s6fQhgFWM" 
+    crossorigin="anonymous"/>
+    
+    <TextField id="filled-basic" label="Filled" variant="filled" /><TextField id="outlined-basic" label="Outlined" variant="outlined" />
+    <script type="text/javascript" src="//unpkg.com/@worldcoin/id/dist/world-id.js"></script>
+    worldID.init("world-id-container", {
+      enable_telemetry: true,
+      action_id: "wid_BPZsRJANxct2cZxVRyh80SFG",
+    });
+    
+  </head>
+  <body>
+
+    
+  <body onload="onloadHandler()">
+    <div id="world-id-container"></div>
+   
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <div id="world-id-container"></div>
+    
+    <script src="https://www.cryptohopper.com/widgets/js/script"></script>
+    <div class="cryptohopper-web-widget" data-id="7" data-theme="dark" data-coins="matic-network" data-numcoins="undefined"></div>
+    <script type="text/javascript">
+      window.onload = function(yourFunction) {
+     yourFunction(dataFrom,timeFrom, dataTo, timeTo);
+     const dataFrom = document.getElementsByTagName("input")[0].value; 
+     const timeFrom = document.getElementsByTagName("input")[1].value; 
+     const dataTo = document.getElementsByTagName("input")[2].value; 
+     const timeTo = document.getElementsByTagName("input")[3].value; 
+     };
+   </script> 
+  </body>
+</html>
