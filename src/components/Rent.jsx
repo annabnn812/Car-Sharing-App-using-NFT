@@ -30,12 +30,43 @@ const Rent = () => {
   const [defaultAccount, setDefaultAccount] = useState(null);
   const [userBalance, setUserBalance] = useState(null);
   const [record, setRecord] = useState('');
+
+  //const inputRef = useRef();
  
 
  
  
 
+  function parseTime(){
+	// // const dataFrom = inputRef.current.value;
+	const dataFromLe =  document.getElementsByTagName("input")[0];
+	const dataFrom = dataFromLe ? dataFromLe.value : "";
+	
+	
+	const timeFromLe = document.getElementsByTagName("input")[1]; 
+	const timeFrom = timeFromLe ? timeFromLe.value : "";
 
+	const dataToLe = document.getElementsByTagName("input")[2]; 
+	const dataTo= dataToLe ? dataToLe.value : "";
+
+	const timeToLe = document.getElementsByTagName("input")[3];
+	const timeTo = timeToLe ? timeToLe.value : "";
+
+	if (!dataFrom || !timeFrom || !dataTo || !timeTo) {
+		return (0);
+	}
+
+
+	
+	const from = dataFrom + " " + timeFrom 
+	const to = dataTo + " " + timeTo  
+	const parseFrom = Date.parse(from) 
+	const parseTo = Date.parse(to) 
+	const timeInMin = Math.ceil((parseTo - parseFrom) / 60000 ) ; 
+	
+	return (timeInMin)
+}
+console.log(parseTime())
     
 	const connectWallet = async () => {
 		try {
@@ -292,7 +323,7 @@ const Rent = () => {
         &nbsp;	
 		<h5 className=" col-md-4 m-10 text-left text-white"> From: </h5>
         <div  className="first-row">
-		<DataTimeFrom/>
+		<DataTimeFrom />
 		</div>
         <br />
 		&nbsp;
@@ -304,7 +335,7 @@ const Rent = () => {
 		&nbsp;
         <br />
 		
-          <button className='cta-button confirm' disabled={loading}   >
+          <button className='cta-button confirm' disabled={loading} onClick={parseTime}  >
 							Confirm time
 						</button>  
 						&nbsp;
@@ -388,21 +419,7 @@ const Rent = () => {
 
 	
 	
-function parseTime(){
-	const dataFrom = document.getElementsByTagName("input")[0].value; 
-	const timeFrom = document.getElementsByTagName("input")[1].value; 
-	const dataTo = document.getElementsByTagName("input")[2].value; 
-	const timeTo = document.getElementsByTagName("input")[3].value;
-	const from = dataFrom + " " + timeFrom 
-	const to = dataTo + " " + timeTo  
-	const parseFrom = Date.parse(from) 
-	const parseTo = Date.parse(to) 
-	const timeInMin = Math.ceil((parseTo - parseFrom) / 60000 ) ; 
-	
-	return (timeInMin)
-	
-}
-console.log(parseTime())
+
 
 
  const timeDays =Math.floor(parseTime() / 60 / 24 ); 
@@ -424,13 +441,14 @@ console.log(parseTime())
 
  }
  
+
  console.log((totalPrice(tot)).toFixed(2))  
 
-const getEthPrice = document.getElementById("mcw-7").textContent;
-const aa = getEthPrice.slice(17)  
-const totalCostEth = (totalPrice(tot) / aa ).toFixed(5) 
+ const getEthPrice = document.getElementById("mcw-7").textContent;
+ const aa = getEthPrice.slice(17)  
+ const totalCostEth = (totalPrice(tot) / aa ).toFixed(5)
+//const totalCostEth = "123"
 console.log(totalCostEth) 
-
 
 const renderMints = () => {
 	if (currentAccount && mints.length > 0) {
