@@ -117,86 +117,119 @@ console.log(parseTime())
 		}
 	};
 
-
+const mintNFT = async (duration, price) => {
+		if (duration.trim() == "" || price.trim() == "") {
+		  return {
+			success: false,
+			status: "❗Please make sure all fields are completed before minting.",
+		  };
+		}
+	  
+		//make metadata
+		const metadata = new Object();
+		// metadata.url = name;
+		metadata.duration = tot;
+		metadata.price = totalPrice(tot);
+	  
+		const pinataResponse = await pinJSONToIPFS(metadata);
+		if (!pinataResponse.success) {
+		  return {
+			success: false,
+			status: "😢 Something went wrong while uploading your tokenURI.",
+		  };
+		}
+		const tokenURI = pinataResponse.pinataUrl;
+	  
+		const provider = new ethers.providers.Web3Provider(ethereum);
+		const signer = provider.getSigner();
+		const contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI.abi, signer);
+	  
+		const transactionParameters = {
+		  to: contractAddress, // Required except during contract publications.
+		  from: window.ethereum.selectedAddress, // must match user's active address.
+		  data: window.contract.methods
+			.mintNFT(window.ethereum.selectedAddress, tokenURI)
+			.encodeABI(),
+		};
   
-	const mintRent = async () => {
+// 	const mintRent = async () => {
 		
-		if (!rent) {
-		  return
-		}
+// 		if (!rent) {
+// 		  return
+// 		}
 	
-		if (rent.length <= 3) {
-		  alert("choose your dates first")
-		  return;
-		}
+// 		if (rent.length <= 3) {
+// 		  alert("choose your dates first")
+// 		  return;
+// 		}
 	
-		const price = rent.length == 3 ? '0.5' : (rent.lenth === 4 ? '0.4' : '0.1');
-		console.log("minting rent", rent, "with price", price);
-		try {
-			const {ethereum} = window;
-			  if (ethereum) {
-		  const provider = new ethers.providers.Web3Provider(ethereum);
-				const signer = provider.getSigner();
-				const contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI.abi, signer);
-				console.log("going to call wallet to pay gas")
+// 		const price = rent.length == 3 ? '0.5' : (rent.lenth === 4 ? '0.4' : '0.1');
+// 		console.log("minting rent", rent, "with price", price);
+// 		try {
+// 			const {ethereum} = window;
+// 			  if (ethereum) {
+// 		  const provider = new ethers.providers.Web3Provider(ethereum);
+// 				const signer = provider.getSigner();
+// 				const contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI.abi, signer);
+// 				console.log("going to call wallet to pay gas")
 	
-				let tx = await contract.register(rent, {value: ethers.utils.parseEther(price)});
-				const receipt = await tx.wait();
+// 				let tx = await contract.register(rent, {value: ethers.utils.parseEther(price)});
+// 				const receipt = await tx.wait();
 	
-				if (receipt.status === 1) {
-				  console.log("Rent minteds! https://mumbai.polygonscan.com/tx/"+tx.hash)
+// 				if (receipt.status === 1) {
+// 				  console.log("Rent minteds! https://mumbai.polygonscan.com/tx/"+tx.hash)
 	
-				  const tx2 = contract.setRecord(rent, record);
-				  const tx2receipt = await tx2.wait();
+// 				  const tx2 = contract.setRecord(rent, record);
+// 				  const tx2receipt = await tx2.wait();
 	
-				  console.log("record set!! https://mumbai.polygonscan.com/tx/"+tx2.hash)
+// 				  console.log("record set!! https://mumbai.polygonscan.com/tx/"+tx2.hash)
 	
-				 setTimeout(() => {
-						fetchMints();
-					}, 2000);
+// 				 setTimeout(() => {
+// 						fetchMints();
+// 					}, 2000);
 	
-					setRecord('');
-					setRent('');
-				} else {
-					alert("Transaction failed! Please try again");
-				}
-			}
-		  } catch(error) {
-			console.log(error);
-		  }
-	  }
+// 					setRecord('');
+// 					setRent('');
+// 				} else {
+// 					alert("Transaction failed! Please try again");
+// 				}
+// 			}
+// 		  } catch(error) {
+// 			console.log(error);
+// 		  }
+// 	  }
 	
-	  const fetchMints = async () => {
-		try {
-			const { ethereum } = window;
-			if (ethereum) {
+// 	  const fetchMints = async () => {
+// 		try {
+// 			const { ethereum } = window;
+// 			if (ethereum) {
 				
-				const provider = new ethers.providers.Web3Provider(ethereum);
-				const signer = provider.getSigner();
-				const contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI.abi, signer);
+// 				const provider = new ethers.providers.Web3Provider(ethereum);
+// 				const signer = provider.getSigner();
+// 				const contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI.abi, signer);
 					
-				// Get all the rent times from our contract
-				const rangeTimes = await contract.getAllTimes();
+// 				// Get all the rent times from our contract
+// 				const rangeTimes = await contract.getAllTimes();
 					
-				// For each name, get the record and the address
-				const mintRecords = await Promise.all(rangeTimes.map(async (rangeTime) => {
-				const mintRecord = await contract.records(rangeTime);
-				const owner = await contract.rents(rangeTime);
-				return {
-					id: rangeTimes.indexOf(rangeTime),
-					name: rangeTime,
-					record: mintRecord,
-					owner: owner,
-				};
-			}));
+// 				// For each name, get the record and the address
+// 				const mintRecords = await Promise.all(rangeTimes.map(async (rangeTime) => {
+// 				const mintRecord = await contract.records(rangeTime);
+// 				const owner = await contract.rents(rangeTime);
+// 				return {
+// 					id: rangeTimes.indexOf(rangeTime),
+// 					name: rangeTime,
+// 					record: mintRecord,
+// 					owner: owner,
+// 				};
+// 			}));
 	
-			console.log("MINTS FETCHED ", mintRecords);
-			setMints(mintRecords);
-			}
-		} catch(error){
-			console.log(error);
-		}
-	}
+// 			console.log("MINTS FETCHED ", mintRecords);
+// 			setMints(mintRecords);
+// 			}
+// 		} catch(error){
+// 			console.log(error);
+// 		}
+// 	}
 	
   const switchNetwork = async () => {
 	if (window.ethereum) {
