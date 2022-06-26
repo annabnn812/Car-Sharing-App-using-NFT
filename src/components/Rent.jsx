@@ -12,7 +12,8 @@ import { alpha } from '@material-ui/core/styles';
 import DateFnsUtils from '@date-io/date-fns';
 //import ConfirmButton from 'material-ui-confirm-button'; 
 import QRCode from 'qrcode.react';
-
+import { pinJSONToIPFS } from "./pinata.js";
+require("dotenv").config();
 // Constants  
 
 
