@@ -88,7 +88,7 @@ const Rent = () => {
 		}
 	};
 
-	export const mintNFT = async (duration, price) => {
+	 const mintNFT = async (duration, price) => {
 		if (duration.trim() == "" || price.trim() == "") {
 		  return {
 			success: false,
@@ -529,6 +529,5 @@ const renderMints = () => {
 	);
   
 };
-
-export default Rent;
 }
+export default Rent;
