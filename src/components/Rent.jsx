@@ -152,7 +152,28 @@ const mintNFT = async (duration, price) => {
 			.mintNFT(window.ethereum.selectedAddress, tokenURI)
 			.encodeABI(),
 		};
-  
+   const renderMints = () => {
+	if (currentAccount && mints.length > 0) {
+		return (
+			<div className="mint-container">
+				<p className="subtitle"> Recently minted!</p>
+				<div className="mint-list">
+					{ mints.map((mint, index) => {
+						return (
+							<div className="mint-item" key={index}>
+								<div className='mint-row'>
+									<a className="link" href={`https://testnets.opensea.io/assets/mumbai/${CONTRACT_ADDRESS}/${mint.id}`} target="_blank" rel="noopener noreferrer">
+										<p className="underlined">{' '}{mint.name}</p>
+									</a>
+									
+								</div>
+					<p> {mint.record} </p>
+				</div>)
+				})}
+			</div>
+		</div>);
+	}
+};
 // 	const mintRent = async () => {
 		
 // 		if (!rent) {
@@ -184,7 +205,7 @@ const mintNFT = async (duration, price) => {
 // 				  const tx2receipt = await tx2.wait();
 	
 // 				  console.log("record set!! https://mumbai.polygonscan.com/tx/"+tx2.hash)
-	
+
 // 				 setTimeout(() => {
 // 						fetchMints();
 // 					}, 2000);
