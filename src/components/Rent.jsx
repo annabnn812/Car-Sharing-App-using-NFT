@@ -12,10 +12,10 @@ import { alpha } from '@material-ui/core/styles';
 import DateFnsUtils from '@date-io/date-fns';
 //import ConfirmButton from 'material-ui-confirm-button'; 
 import QRCode from 'qrcode.react';
+import { pinJSONToIPFS } from "./pinata.js";
+require("dotenv").config();
 
-// Constants  
-
-
+// Constants
 
 
 const CONTRACT_ADDRESS = '0xae9CE88dF10fDD415A6f75Fa824a566739aa1B3B'
@@ -31,43 +31,12 @@ const Rent = () => {
   const [defaultAccount, setDefaultAccount] = useState(null);
   const [userBalance, setUserBalance] = useState(null);
   const [record, setRecord] = useState('');
-
-  //const inputRef = useRef();
  
 
  
  
 
-  function parseTime(){
-	// // const dataFrom = inputRef.current.value;
-	const dataFromLe =  document.getElementsByTagName("input")[0];
-	const dataFrom = dataFromLe ? dataFromLe.value : "";
-	
-	
-	const timeFromLe = document.getElementsByTagName("input")[1]; 
-	const timeFrom = timeFromLe ? timeFromLe.value : "";
 
-	const dataToLe = document.getElementsByTagName("input")[2]; 
-	const dataTo= dataToLe ? dataToLe.value : "";
-
-	const timeToLe = document.getElementsByTagName("input")[3];
-	const timeTo = timeToLe ? timeToLe.value : "";
-
-	if (!dataFrom || !timeFrom || !dataTo || !timeTo) {
-		return (0);
-	}
-
-
-	
-	const from = dataFrom + " " + timeFrom 
-	const to = dataTo + " " + timeTo  
-	const parseFrom = Date.parse(from) 
-	const parseTo = Date.parse(to) 
-	const timeInMin = Math.ceil((parseTo - parseFrom) / 60000 ) ; 
-	
-	return (timeInMin)
-}
-console.log(parseTime())
     
 	const connectWallet = async () => {
 		try {
@@ -119,86 +88,121 @@ console.log(parseTime())
 		}
 	};
 
-
+	export const mintNFT = async (duration, price) => {
+		if (duration.trim() == "" || price.trim() == "") {
+		  return {
+			success: false,
+			status: "❗Please make sure all fields are completed before minting.",
+		  };
+		}
+	  
+		//make metadata
+		const metadata = new Object();
+		// metadata.url = name;
+		metadata.duration = tot;
+		metadata.price = totalPrice(tot);
+	  
+		const pinataResponse = await pinJSONToIPFS(metadata);
+		if (!pinataResponse.success) {
+		  return {
+			success: false,
+			status: "😢 Something went wrong while uploading your tokenURI.",
+		  };
+		}
+		const tokenURI = pinataResponse.pinataUrl;
+	  
+		const provider = new ethers.providers.Web3Provider(ethereum);
+		const signer = provider.getSigner();
+		const contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI.abi, signer);
+	  
+		const transactionParameters = {
+		  to: contractAddress, // Required except during contract publications.
+		  from: window.ethereum.selectedAddress, // must match user's active address.
+		  data: window.contract.methods
+			.mintNFT(window.ethereum.selectedAddress, tokenURI)
+			.encodeABI(),
+		};
   
-	const mintRent = async () => {
+	// const mintRent = async () => {
 		
-		if (!rent) {
-		  return
-		}
+	// 	if (!rent) {
+	// 	  return
+	// 	}
 	
-		if (rent.length <= 3) {
-		  alert("choose your dates first")
-		  return;
-		}
+	// 	if (rent.length <= 3) {
+	// 	  alert("choose your dates first")
+	// 	  return;
+	// 	}
 	
-		const price = rent.length == 3 ? '0.5' : (rent.lenth === 4 ? '0.4' : '0.1');
-		console.log("minting rent", rent, "with price", price);
-		try {
-			const {ethereum} = window;
-			  if (ethereum) {
-		  const provider = new ethers.providers.Web3Provider(ethereum);
-				const signer = provider.getSigner();
-				const contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI.abi, signer);
-				console.log("going to call wallet to pay gas")
-	
-				let tx = await contract.register(rent, {value: ethers.utils.parseEther(price)});
-				const receipt = await tx.wait();
-	
-				if (receipt.status === 1) {
-				  console.log("Rent minteds! https://mumbai.polygonscan.com/tx/"+tx.hash)
-	
-				  const tx2 = contract.setRecord(rent, record);
-				  const tx2receipt = await tx2.wait();
-	
-				  console.log("record set!! https://mumbai.polygonscan.com/tx/"+tx2.hash)
-	
-				 setTimeout(() => {
-						fetchMints();
-					}, 2000);
-	
-					setRecord('');
-					setRent('');
-				} else {
-					alert("Transaction failed! Please try again");
-				}
-			}
-		  } catch(error) {
-			console.log(error);
-		  }
-	  }
-	
-	  const fetchMints = async () => {
-		try {
-			const { ethereum } = window;
-			if (ethereum) {
+	// 	const price = rent.length == 3 ? '0.5' : (rent.lenth === 4 ? '0.4' : '0.1');
+	// 	console.log("minting rent", rent, "with price", price);
+	// 	try {
+	// 		const {ethereum} = window;
+	// 		  if (ethereum) {
+	// 	  const provider = new ethers.providers.Web3Provider(ethereum);
+	// 			const signer = provider.getSigner();
+	// 			const contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI.abi, signer);
+	// 			console.log("going to call wallet to pay gas")
+
 				
-				const provider = new ethers.providers.Web3Provider(ethereum);
-				const signer = provider.getSigner();
-				const contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI.abi, signer);
-					
-				// Get all the rent times from our contract
-				const rangeTimes = await contract.getAllTimes();
-					
-				// For each name, get the record and the address
-				const mintRecords = await Promise.all(rangeTimes.map(async (rangeTime) => {
-				const mintRecord = await contract.records(rangeTime);
-				const owner = await contract.rents(rangeTime);
-				return {
-					id: rangeTimes.indexOf(rangeTime),
-					name: rangeTime,
-					record: mintRecord,
-					owner: owner,
-				};
-			}));
+	// 			let tx = await contract.mintNFT(windows.ethereum.address, url)
+	// 			// let tx = await contract.register(rent, {value: ethers.utils.parseEther(price)});
+	// 			const receipt = await tx.wait();
 	
-			console.log("MINTS FETCHED ", mintRecords);
-			setMints(mintRecords);
-			}
-		} catch(error){
-			console.log(error);
-		}
-	}
+	// 			if (receipt.status === 1) {
+	// 			  console.log("Rent minteds! https://mumbai.polygonscan.com/tx/"+tx.hash)
+	
+	// 			  const tx2 = contract.setRecord(rent, record);
+	// 			  const tx2receipt = await tx2.wait();
+	
+	// 			  console.log("record set!! https://mumbai.polygonscan.com/tx/"+tx2.hash)
+	
+	// 			 setTimeout(() => {
+	// 					fetchMints();
+	// 				}, 2000);
+	
+	// 				setRecord('');
+	// 				setRent('');
+	// 			} else {
+	// 				alert("Transaction failed! Please try again");
+	// 			}
+	// 		}
+	// 	  } catch(error) {
+	// 		console.log(error);
+	// 	  }
+	//   }
+	
+	//   const fetchMints = async () => {
+	// 	try {
+	// 		const { ethereum } = window;
+	// 		if (ethereum) {
+				
+	// 			const provider = new ethers.providers.Web3Provider(ethereum);
+	// 			const signer = provider.getSigner();
+	// 			const contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI.abi, signer);
+					
+	// 			// Get all the rent times from our contract
+	// 			const rangeTimes = await contract.getAllTimes();
+					
+	// 			// For each name, get the record and the address
+	// 			const mintRecords = await Promise.all(rangeTimes.map(async (rangeTime) => {
+	// 			const mintRecord = await contract.records(rangeTime);
+	// 			const owner = await contract.rents(rangeTime);
+	// 			return {
+	// 				id: rangeTimes.indexOf(rangeTime),
+	// 				name: rangeTime,
+	// 				record: mintRecord,
+	// 				owner: owner,
+	// 			};
+	// 		}));
+	
+	// 		console.log("MINTS FETCHED ", mintRecords);
+	// 		setMints(mintRecords);
+	// 		}
+	// 	} catch(error){
+	// 		console.log(error);
+	// 	}
+	// }
 	
   const switchNetwork = async () => {
 	if (window.ethereum) {
@@ -324,7 +328,7 @@ console.log(parseTime())
         &nbsp;	
 		<h5 className=" col-md-4 m-10 text-left text-white"> From: </h5>
         <div  className="first-row">
-		<DataTimeFrom />
+		<DataTimeFrom/>
 		</div>
         <br />
 		&nbsp;
@@ -336,7 +340,7 @@ console.log(parseTime())
 		&nbsp;
         <br />
 		
-          <button className='cta-button confirm' disabled={loading} onClick={parseTime}  >
+          <button className='cta-button confirm' disabled={loading}   >
 							Confirm time
 						</button>  
 						&nbsp;
@@ -365,7 +369,7 @@ console.log(parseTime())
 		
     
         </div>
-						<button className='cta-button mint-button' disabled={loading} onClick={mintRent}>
+						<button className='cta-button mint-button' disabled={loading} onClick={mintNFT}>
 							Rent
 						</button>  
 					
@@ -420,7 +424,21 @@ console.log(parseTime())
 
 	
 	
-
+function parseTime(){
+	const dataFrom = document.getElementsByTagName("input")[0].value; 
+	const timeFrom = document.getElementsByTagName("input")[1].value; 
+	const dataTo = document.getElementsByTagName("input")[2].value; 
+	const timeTo = document.getElementsByTagName("input")[3].value;
+	const from = dataFrom + " " + timeFrom 
+	const to = dataTo + " " + timeTo  
+	const parseFrom = Date.parse(from) 
+	const parseTo = Date.parse(to) 
+	const timeInMin = Math.ceil((parseTo - parseFrom) / 60000 ) ; 
+	
+	return (timeInMin)
+	
+}
+console.log(parseTime())
 
 
  const timeDays =Math.floor(parseTime() / 60 / 24 ); 
@@ -442,14 +460,13 @@ console.log(parseTime())
 
  }
  
-
  console.log((totalPrice(tot)).toFixed(2))  
 
- const getEthPrice = document.getElementById("mcw-7").textContent;
- const aa = getEthPrice.slice(17)  
- const totalCostEth = (totalPrice(tot) / aa ).toFixed(5)
-//const totalCostEth = "123"
+const getEthPrice = document.getElementById("mcw-7").textContent;
+const aa = getEthPrice.slice(17)  
+const totalCostEth = (totalPrice(tot) / aa ).toFixed(5) 
 console.log(totalCostEth) 
+
 
 const renderMints = () => {
 	if (currentAccount && mints.length > 0) {
@@ -514,3 +531,4 @@ const renderMints = () => {
 };
 
 export default Rent;
+}
