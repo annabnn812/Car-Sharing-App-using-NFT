@@ -13,8 +13,9 @@ import DateFnsUtils from '@date-io/date-fns';
 //import ConfirmButton from 'material-ui-confirm-button'; 
 import QRCode from 'qrcode.react';
 
+// Constants  
 
-// Constants
+
 
 
 const CONTRACT_ADDRESS = '0xae9CE88dF10fDD415A6f75Fa824a566739aa1B3B'
